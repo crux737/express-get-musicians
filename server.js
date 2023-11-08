@@ -1,6 +1,10 @@
-const app = require("./src/app");
-const { db } = require("./db/connection")
+const express = required('express');
+const app = express();
+const musicianRouter = require('./routes/musicians')
 const port = 3000;
+
+
+
 
 app.listen(port, () => {
     db.sync();
