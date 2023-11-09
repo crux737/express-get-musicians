@@ -1,4 +1,4 @@
-// install dependencies
+
 const { execSync } = require('child_process');
 execSync('npm install');
 execSync('npm run seed');
@@ -34,16 +34,46 @@ describe('./musicians endpoint', () => {
     test("Testing musicians1 endpoint", async => {
         // Send request to `/musicians/1` endpoint 
         const musicianOne =  request(app).get("/musicians/1");
-        expect(res).toBe(musicianOne);
+        expect(res).toBe(musicianOne)
+  
+    })
 
-    } )
+    test("Should return a list of musicians", async => { 
+        const musicianArray = request(app).get("/musicians/1");
+        expect(res.body).toBe(musicianArray);
 
-
+    })
     
+    test('should return an error when "name" field is empty', async (done) => {
+        response = await request(app).post('/musicians').send({ instrument: 'Guitar' }) 
+        .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.have.property('error');
+            done();
+          });
+      });
     
+      test('should return an error when "instrument" field is empty', async (done) => {
+        filedEmpty = request(app).post('/musicians').send({ name: 'John' }) 
+        .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.have.property('error');
+        done();
+          });
 
+    test('should return an error when "name" is too short', async (done) => {
+    nameShort = request(app).post('/musicians').send({ name: 'C', instrument: 'Guitar'}) 
+    .end((err, res) => {
+    expect(res).to.have.status(400);
+    expect(res.body).to.have.property('error');
+    done();
+        })
 
-
-
-    
+    test('should return an error when "name" is too long', async (done) => {
+    namelong = request(app).post('/musicians').send({ name: 'NameIsTooLong', instrument: 'Guitar'}) 
+    .end((err, res) => {
+    expect(res).to.have.status(400);
+    expect(res.body).to.have.property('error');
+    done();
+        })
 })
